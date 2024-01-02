@@ -4,7 +4,7 @@
 		- [x] JSON handling ✅ 2024-01-03
 		- [x] Geocoding, address to Lat Lon for use in weather get request ✅ 2024-01-03
 	- [ ] Phase 2 (get working in a locally hosted "website")
-	- [x] Phase 3 (Spotify song recommendations based on current weather?? ) ✅ 2024-01-03
+	- [ ] Phase 3 (Spotify song recommendations based on current weather?? )
 
 
 
