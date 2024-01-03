@@ -1,45 +1,59 @@
-# Weather Application
+# Weather App README
 
-***Written by ChatGPT lul***
+***Written by ChatGPT but looks accurate***
 
-This Go program retrieves weather information for a given location using the OpenWeatherMap API.
+## Introduction
+
+This GoLang application provides real-time weather information based on user-provided location data. It leverages the Mapbox Geocoding API to convert a user's address input into geographical coordinates (latitude and longitude). The obtained coordinates are then used to fetch weather data from the OpenWeatherMap API.
 
 ## Prerequisites
 
-Before running the program, make sure you have the following prerequisites:
+Before running the application, ensure you have the following:
 
 - Go installed on your machine.
-- An API key from OpenWeatherMap. You can obtain one by signing up here.
+- Access to Mapbox API and OpenWeatherMap API keys. Set these keys as environment variables:
+  - Mapbox API Key: `MapBoxAPI`
+  - OpenWeatherMap API Key: `OpenWeatherAPI`
 
 ## Installation
 
 1. Clone the repository:
-    
-    bashCopy code
-    
-    `git clone [repository_url] cd [repository_directory]`
-    
-2. Replace `[API_KEY]` in the `url` variable inside the `main` function with your OpenWeatherMap API key.
-    
-3. Build and run the program:
-    
-    bashCopy code
-    
-    `go build main.go ./main`
-    
+
+    ```bash
+    git clone https://github.com/your_username/your_repo.git
+    cd your_repo
+    ```
+
+2. Set up environment variables:
+
+    ```bash
+    export MapBoxAPI=your_mapbox_api_key
+    export OpenWeatherAPI=your_openweather_api_key
+    ```
+
+3. Run the application:
+
+    ```bash
+    go run main.go
+    ```
 
 ## Usage
 
-1. Enter your address when prompted.
-2. The program will use the address to obtain latitude and longitude information.
-3. It will then fetch and display the current weather information for the specified location.
+1. The application will prompt you to enter your location.
 
-## Configuration
+2. Provide your address as input when prompted.
 
-You can customize the program by modifying the following parameters:
+3. The application will display the current temperature and weather description for the specified location.
 
-- **OpenWeatherMap API Key:** Replace `[API_KEY]` in the `url` variable inside the `main` function with your API key.
+## Code Structure
+
+- `main.go`: Contains the main logic for user interaction, geocoding, and weather data retrieval.
+
+## Dependencies
+
+- [Mapbox Geocoding API](https://docs.mapbox.com/api/search/geocoding/)
+- [OpenWeatherMap API](https://openweathermap.org/api)
 
 ## Acknowledgments
 
-- Weather data is provided by [OpenWeatherMap](https://openweathermap.org/).
+- Mapbox and OpenWeatherMap for providing the APIs used in this application.
