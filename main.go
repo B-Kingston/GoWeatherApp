@@ -1,10 +1,10 @@
 package main
 
 import (
+	"bufio"
 	"encoding/json"
 	"fmt"
 	"io"
-	"log"
 	"net/http"
 	"os"
 	"strings"
@@ -53,70 +53,77 @@ type weatherResponse struct {
 	Cod      int    `json:"cod"`
 }
 
-type geoCoder []struct {
-	PlaceID     int      `json:"place_id"`
-	Licence     string   `json:"licence"`
-	OsmType     string   `json:"osm_type"`
-	OsmID       int      `json:"osm_id"`
-	Boundingbox []string `json:"boundingbox"`
-	Lat         string   `json:"lat"`
-	Lon         string   `json:"lon"`
-	DisplayName string   `json:"display_name"`
-	Class       string   `json:"class"`
-	Type        string   `json:"type"`
-	Importance  float64  `json:"importance"`
+type geoCoder struct {
+	Type     string   `json:"type"`
+	Query    []string `json:"query"`
+	Features []struct {
+		ID         string   `json:"id"`
+		Type       string   `json:"type"`
+		PlaceType  []string `json:"place_type"`
+		Relevance  int      `json:"relevance"`
+		Properties struct {
+			Accuracy string `json:"accuracy"`
+			MapboxID string `json:"mapbox_id"`
+		} `json:"properties"`
+		Text      string    `json:"text"`
+		PlaceName string    `json:"place_name"`
+		Center    []float64 `json:"center"`
+		Geometry  struct {
+			Type        string    `json:"type"`
+			Coordinates []float64 `json:"coordinates"`
+		} `json:"geometry"`
+		Address string `json:"address"`
+		Context []struct {
+			ID        string `json:"id"`
+			MapboxID  string `json:"mapbox_id"`
+			Text      string `json:"text"`
+			Wikidata  string `json:"wikidata,omitempty"`
+			ShortCode string `json:"short_code,omitempty"`
+		} `json:"context"`
+	} `json:"features"`
+	Attribution string `json:"attribution"`
 }
 
-func getUserLocation(rawAddress string) string {
-	fmt.Println(rawAddress, "formattedLatLon")
-	geoCoderApiKey := os.Getenv("GeoCoderAPI")
-	formattedLatLon := strings.ReplaceAll(rawAddress, " ", "+")
+func getUserLocation(rawAddress string) (float64, float64, string) {
 
-	fmt.Println(formattedLatLon, "formattedLatLon")
+	geoCoderApiKey := os.Getenv("MapBoxAPI")
+	formattedLatLon := strings.ReplaceAll(rawAddress, " ", "%20")
 
-	url := fmt.Sprintf("https://geocode.maps.co/search?q=%s&api_key=%s", formattedLatLon, geoCoderApiKey)
+	url := fmt.Sprintf("https://api.mapbox.com/geocoding/v5/mapbox.places/%s.json?access_token=%s&limit=1", formattedLatLon, geoCoderApiKey)
 	method := "GET"
-
 	client := &http.Client{}
 	req, err := http.NewRequest(method, url, nil)
 
 	if err != nil {
 		fmt.Println(err)
-		return ""
+		return 0, 0, "err"
 	}
 	res, err := client.Do(req)
 	if err != nil {
 		fmt.Println(err)
-		return ""
+		return 0, 0, "err"
 	}
 	defer res.Body.Close()
 
 	geocodeResponseBody, err := io.ReadAll(res.Body)
 	if err != nil {
 		fmt.Println(err)
-		return ""
+		return 0, 0, "err"
 	}
 
 	var geocodeResponse = geoCoder{}
-	errGeocodeResponse := json.Unmarshal(geocodeResponseBody, &geocodeResponse)
-	log.Print(errGeocodeResponse)
+	json.Unmarshal(geocodeResponseBody, &geocodeResponse)
 
-	latLon := geocodeResponse[0].Lat
-
-	return latLon
+	longitude := geocodeResponse.Features[0].Geometry.Coordinates[0]
+	latitude := geocodeResponse.Features[0].Geometry.Coordinates[1]
+	locality := geocodeResponse.Features[0].Context[1].Text
+	return longitude, latitude, locality
 }
 
-func main() {
-	var rawAddressInput string
-	openWeatherMapApiKey := os.Getenv("GeoCoderAPI")
-	fmt.Print(openWeatherMapApiKey)
-	fmt.Println("What is your address:")
-	fmt.Scanln(&rawAddressInput)
-	//fmt.Println(rawAddressInput)
-	returnedLatLon := getUserLocation(rawAddressInput)
-	fmt.Println(returnedLatLon)
+func getWeather(latitudeInput, longitudeInput float64) (float64, string) {
+	openWeatherMapApiKey := os.Getenv("OpenWeatherAPI")
 
-	url := fmt.Sprintf("http://api.openweathermap.org/data/2.5//weather?id=2060771&units=metric&lang=en&appid=%s", openWeatherMapApiKey)
+	url := fmt.Sprintf("http://api.openweathermap.org/data/2.5//weather?lat=%v&lon=%v&units=metric&lang=en&appid=%s", latitudeInput, longitudeInput, openWeatherMapApiKey)
 	method := "GET"
 
 	client := &http.Client{}
@@ -124,25 +131,38 @@ func main() {
 
 	if err != nil {
 		fmt.Println(err)
-		return
+		return 0, ""
 	}
 	res, err := client.Do(req)
 	if err != nil {
 		fmt.Println(err)
-		return
+		return 0, ""
 	}
 	defer res.Body.Close()
 
 	WeatherResponseBody, err := io.ReadAll(res.Body)
 	if err != nil {
 		fmt.Println(err)
-		return
+		return 0, ""
 	}
 
 	var storedWeatherResponse = weatherResponse{}
-	errWeatherResponse := json.Unmarshal(WeatherResponseBody, &storedWeatherResponse)
-	log.Print(errWeatherResponse)
+	json.Unmarshal(WeatherResponseBody, &storedWeatherResponse)
 
-	fmt.Println("The weather in swanview is currently", storedWeatherResponse.Weather[0].Description, "and a temp of", storedWeatherResponse.Main.Temp)
+	return storedWeatherResponse.Main.Temp, storedWeatherResponse.Weather[0].Description
+}
+
+func main() {
+	scanner := bufio.NewScanner(os.Stdin)
+	fmt.Println("Please enter your location")
+	scanner.Scan()
+
+	rawAddressInput := scanner.Text()
+
+	returnedLongitude, returnedLatitude, returnedLocality := getUserLocation(rawAddressInput)
+
+	currentTemp, currentWeatherDescription := getWeather(returnedLatitude, returnedLongitude)
+
+	fmt.Printf("The Current tempreature in %v is %v and the weather is currently %v", returnedLocality, currentTemp, currentWeatherDescription)
 
 }
