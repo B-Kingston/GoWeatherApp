@@ -8,13 +8,17 @@
 	- [x] Update README to correctly represent the code ✅ 2024-01-04
 
 - [ ] Phase 2 (get working in a locally hosted "website") #t
-		- [ ] ???
-		- [ ] ???
-		
-- [ ] Phase 3 (Spotify song recommendations based on current weather?? ) #t
-		- [ ] ???
-		- [ ] ???
+	- [ ] ???
+	- [ ] ???
 
-- [ ] Phase 4 (Host and make externally accessible) #t
+- [ ] Phase 3 (Host and make externally accessible) #t
+	- [ ] ???
+	- [ ] ???
+	
+- [ ] Phase 4 (Spotify song recommendations based on current weather?? ) #t
+	- [ ] ???
+	- [ ] ???
+
+
 
 - [x] Work out git/ github intergration ✅ 2024-01-03
