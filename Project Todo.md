@@ -1,4 +1,5 @@
 
+
 - [x] Phase 1 (print to terminal) #w ✅ 2024-01-04
 	- [x] Figure out weather api ✅ 2024-01-03
 	- [x] JSON handling ✅ 2024-01-03
@@ -19,7 +20,3 @@
 - [ ] Phase 4 (Spotify song recommendations based on current weather?? ) #t
 	- [ ] ???
 	- [ ] ???
-
-
-
-- [x] Work out git/ github intergration ✅ 2024-01-03
