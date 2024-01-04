@@ -7,11 +7,12 @@
 	- [x] Change to Mapbox as Geocoder provider, hopefully provide quicker speeds. ✅ 2024-01-03
 	- [x] Update README to correctly represent the code ✅ 2024-01-04
 
-- [ ] Phase 2 (get working in a locally hosted "website") #t
-	- [ ] ???
-	- [ ] ???
+- [ ] Phase 2 (Extended functionality using pre-existing api connections) #t
+	- [ ] Average temperature for a certain radius around original search location?
+	- [ ] More detailed and structured print out of data
+	- [ ] Any other silly novelty I can think up
 
-- [ ] Phase 3 (Host and make externally accessible) #t
+- [ ] Phase 3 (get working in a locally hosted "website") #t
 	- [ ] ???
 	- [ ] ???
 	
