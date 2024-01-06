@@ -152,17 +152,44 @@ func getWeather(latitudeInput, longitudeInput float64) (float64, string) {
 	return storedWeatherResponse.Main.Temp, storedWeatherResponse.Weather[0].Description
 }
 
+// func altLatLonNorth(originalLon, newLon float64) {
+
+// }
+
+// func altLatLonEast(originalLon, newLon float64) {
+
+// }
+
+// func altLatLonSouth(originalLat, newLat float64) {
+
+// }
+
+// func altLatLonWest(originalLon, newLon float64) {
+
+// }
+
 func main() {
 	scanner := bufio.NewScanner(os.Stdin)
-	fmt.Println("Please enter your location")
-	scanner.Scan()
 
-	rawAddressInput := scanner.Text()
+	for {
+		fmt.Println("\nPlease enter your desired location, or type Q to exit")
+		scanner.Scan()
+		if scanner.Text() == "Q" || scanner.Text() == "q" {
+			fmt.Print("\nGoodbye")
+			break
+		} else {
+			rawAddressInput := scanner.Text()
 
-	returnedLongitude, returnedLatitude, returnedLocality := getUserLocation(rawAddressInput)
+			returnedLongitude, returnedLatitude, returnedLocality := getUserLocation(rawAddressInput)
 
-	currentTemp, currentWeatherDescription := getWeather(returnedLatitude, returnedLongitude)
+			// altLatNorth := returnedLatitude - 0.13
+			// altLatSouth := returnedLatitude + 0.13
+			// altLonEast := returnedLongitude + 0.15
+			// altLonWest := returnedLongitude - 0.15
 
-	fmt.Printf("The Current tempreature in %v is %v and the weather is currently %v", returnedLocality, currentTemp, currentWeatherDescription)
+			currentTemp, currentWeatherDescription := getWeather(returnedLatitude, returnedLongitude)
 
+			fmt.Printf("\nThe Current tempreature in %v is %v and the weather is currently %v \n\n", returnedLocality, currentTemp, currentWeatherDescription)
+		}
+	}
 }
