@@ -7,7 +7,9 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"strconv"
 	"strings"
+	//"time"
 )
 
 type weatherResponse struct {
@@ -152,21 +154,41 @@ func getWeather(latitudeInput, longitudeInput float64) (float64, string) {
 	return storedWeatherResponse.Main.Temp, storedWeatherResponse.Weather[0].Description
 }
 
-// func altLatLonNorth(originalLon, newLon float64) {
+func newLatLon(originalLon, originalLat float64) /*(float64, string, float64, string, float64, string, float64, string)*/ {
 
-// }
+	altLatNorth := fmt.Sprintf("%.9g", originalLat-0.13)
+	altLonEast := fmt.Sprintf("%.9g", originalLon+0.15)
+	altLatSouth := fmt.Sprintf("%.9g", originalLat+0.13)
+	altLonWest := fmt.Sprintf("%.9g", originalLon-0.15)
 
-// func altLatLonEast(originalLon, newLon float64) {
+	altLatNorth1, err1 := strconv.ParseFloat(altLatNorth, 64)
+	altLonEast1, err2 := strconv.ParseFloat(altLonEast, 64)
+	altLatSouth1, err3 := strconv.ParseFloat(altLatSouth, 64)
+	altLonWest1, err4 := strconv.ParseFloat(altLonWest, 64)
 
-// }
+	fmt.Sprint(err1, err2, err3, err4)
 
-// func altLatLonSouth(originalLat, newLat float64) {
+	fmt.Print(altLatNorth1, altLonEast1, altLatSouth1, altLonWest1)
 
-// }
+	// altWeatherNorthTemp, altWeatherNorthDescription := getWeather(altLatNorth1, originalLon)
+	// combinedNorth := fmt.Sprint(altWeatherNorthTemp, altWeatherNorthDescription)
+	// time.Sleep(1 * time.Second)
 
-// func altLatLonWest(originalLon, newLon float64) {
+	// altWeatherEastTemp, altWeatherEastDescription := getWeather(originalLat, altLonEast1)
+	// combinedEast := fmt.Sprint(altWeatherEastTemp, altWeatherEastDescription)
+	// time.Sleep(1 * time.Second)
 
-// }
+	// altWeatherSouthTemp, altWeatherSouthDescription := getWeather(altLatSouth1, originalLon)
+	// combinedSouth := fmt.Sprint(altWeatherSouthTemp, altWeatherSouthDescription)
+	// time.Sleep(1 * time.Second)
+
+	// altWeatherWestTemp, altWeatherWestDescription := getWeather(altLonWest1, originalLat)
+	// combinedWest := fmt.Sprint(altWeatherWestTemp, altWeatherWestDescription)
+
+	// fmt.Println(combinedNorth, combinedEast, combinedSouth, combinedWest)
+
+	//return altWeatherNorthTemp, altWeatherNorthDescription, altWeatherEastTemp, altWeatherEastDescription, altWeatherSouthTemp, altWeatherSouthDescription, altWeatherWestTemp, altWeatherWestDescriptio
+}
 
 func main() {
 	scanner := bufio.NewScanner(os.Stdin)
@@ -182,14 +204,14 @@ func main() {
 
 			returnedLongitude, returnedLatitude, returnedLocality := getUserLocation(rawAddressInput)
 
-			// altLatNorth := returnedLatitude - 0.13
-			// altLatSouth := returnedLatitude + 0.13
-			// altLonEast := returnedLongitude + 0.15
-			// altLonWest := returnedLongitude - 0.15
-
 			currentTemp, currentWeatherDescription := getWeather(returnedLatitude, returnedLongitude)
 
 			fmt.Printf("\nThe Current tempreature in %v is %v and the weather is currently %v \n\n", returnedLocality, currentTemp, currentWeatherDescription)
+			newLatLon(returnedLatitude, returnedLongitude)
+
+			//altWeatherNorthTemp, altWeatherNorthDescription, altWeatherEastTemp, altWeatherEastDescription, altWeatherSouthTemp, altWeatherSouthDescription, altWeatherWestTemp, altWeatherWestDescription := newLatLon(returnedLatitude, returnedLongitude)
+
+			//fmt.Println(altWeatherNorthTemp, altWeatherNorthDescription, altWeatherEastTemp, altWeatherEastDescription, altWeatherSouthTemp, altWeatherSouthDescription, altWeatherWestTemp, altWeatherWestDescription)
 		}
 	}
 }

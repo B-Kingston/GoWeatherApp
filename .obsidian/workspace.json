@@ -6,7 +6,7 @@
       {
         "id": "84b74482303f7509",
         "type": "tabs",
-        "dimension": 53.99786780383795,
+        "dimension": 53.99786780383794,
         "children": [
           {
             "id": "066d00989e3cdc6d",
@@ -25,7 +25,7 @@
       {
         "id": "d9176c1ab4dbddcf",
         "type": "tabs",
-        "dimension": 46.00213219616205,
+        "dimension": 46.00213219616206,
         "children": [
           {
             "id": "c00aaabff31cbc98",
@@ -64,7 +64,7 @@
             "state": {
               "type": "search",
               "state": {
-                "query": "tag:#w",
+                "query": "tag:#t",
                 "matchingCase": false,
                 "explainSearch": false,
                 "collapseAll": false,
@@ -81,7 +81,8 @@
               "state": {}
             }
           }
-        ]
+        ],
+        "currentTab": 1
       }
     ],
     "direction": "horizontal",
@@ -164,7 +165,7 @@
       "card-board:CardBoard": false
     }
   },
-  "active": "c00aaabff31cbc98",
+  "active": "0fc7154014e5a2e1",
   "lastOpenFiles": [
     "README.md",
     "Project Todo.md"
