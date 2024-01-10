@@ -154,7 +154,7 @@ func getWeather(latitudeInput, longitudeInput float64) (float64, string, string)
 	return storedWeatherResponse.Main.Temp, storedWeatherResponse.Weather[0].Description, storedWeatherResponse.Name
 }
 
-func newLatLon(originalLon, originalLat float64) /*(float64, string, float64, string, float64, string, float64, string)*/ {
+func newLatLon(originalLon, originalLat float64) (string, string, string, string) {
 
 	altLatNorth := fmt.Sprintf("%.9g", originalLat-0.13)
 	altLonEast := fmt.Sprintf("%.9g", originalLon+0.15)
@@ -166,39 +166,27 @@ func newLatLon(originalLon, originalLat float64) /*(float64, string, float64, st
 	altLatSouth1, err3 := strconv.ParseFloat(altLatSouth, 64)
 	altLonWest1, err4 := strconv.ParseFloat(altLonWest, 64)
 
-	fmt.Sprint(err1, err2, err3, err4)
+	fmt.Sprint(err1, err2, err3, err4) //clears error for unused err's
 
-	// fmt.Println(originalLat, originalLon)
-
-	// fmt.Print(altLatNorth1, altLonEast1, altLatSouth1, altLonWest1)
-	// fmt.Println("#########################################################################################################################################################")
 	altWeatherNorthTemp, altWeatherNorthDescription, altNorthLocationName := getWeather(altLatNorth1, originalLon)
-	combinedNorth := fmt.Sprint(altWeatherNorthTemp, altWeatherNorthDescription, altNorthLocationName)
-
-	//fmt.Println(combinedNorth)
+	combinedNorth := fmt.Sprintf("The current weather in %s is %s with a tempreature of %v", altNorthLocationName, altWeatherNorthDescription, altWeatherNorthTemp)
 
 	time.Sleep(2 * time.Second)
 
 	altWeatherEastTemp, altWeatherEastDescription, altEastLocationName := getWeather(originalLat, altLonEast1)
-	combinedEast := fmt.Sprint(altWeatherEastTemp, altWeatherEastDescription, altEastLocationName)
-
-	//fmt.Println(combinedEast)
+	combinedEast := fmt.Sprintf("The current weather in %s is %s with a tempreature of %v", altEastLocationName, altWeatherEastDescription, altWeatherEastTemp)
 
 	time.Sleep(2 * time.Second)
 
 	altWeatherSouthTemp, altWeatherSouthDescription, altSouthLocationName := getWeather(altLatSouth1, originalLon)
-	combinedSouth := fmt.Sprint(altWeatherSouthTemp, altWeatherSouthDescription, altSouthLocationName)
-
-	//fmt.Println(combinedSouth)
+	combinedSouth := fmt.Sprintf("The current weather in %s is %s with a tempreature of %v", altSouthLocationName, altWeatherSouthDescription, altWeatherSouthTemp)
 
 	time.Sleep(2 * time.Second)
 
 	altWeatherWestTemp, altWeatherWestDescription, altWestLocationName := getWeather(originalLat, altLonWest1)
-	combinedWest := fmt.Sprint(altWeatherWestTemp, altWeatherWestDescription, altWestLocationName)
+	combinedWest := fmt.Sprintf("The current weather in %s is %s with a tempreature of %v", altWestLocationName, altWeatherWestDescription, altWeatherWestTemp)
 
-	fmt.Println(combinedNorth, combinedEast, combinedSouth, combinedWest)
-
-	//return altWeatherNorthTemp, altWeatherNorthDescription, altWeatherEastTemp, altWeatherEastDescription, altWeatherSouthTemp, altWeatherSouthDescription, altWeatherWestTemp, altWeatherWestDescriptio
+	return combinedNorth, combinedEast, combinedSouth, combinedWest
 }
 
 func main() {
@@ -216,14 +204,17 @@ func main() {
 			returnedLongitude, returnedLatitude, returnedLocality := getUserLocation(rawAddressInput)
 
 			currentTemp, currentWeatherDescription, AltLocationName := getWeather(returnedLatitude, returnedLongitude)
+
 			fmt.Sprint(AltLocationName)
 
+			altWeatherNorth, altWeatherEast, altWeatherSouth, altWeatherWest := newLatLon(returnedLongitude, returnedLatitude)
+			fmt.Println("The weather north of your location is", altWeatherNorth)
+			fmt.Println("The weather east of your location is", altWeatherEast)
+			fmt.Println("The weather south of your location is", altWeatherSouth)
+			fmt.Println("The weather west of your location is", altWeatherWest)
+
 			fmt.Printf("\nThe Current tempreature in %v is %v and the weather is currently %v \n\n", returnedLocality, currentTemp, currentWeatherDescription)
-			newLatLon(returnedLongitude, returnedLatitude)
 
-			//altWeatherNorthTemp, altWeatherNorthDescription, altWeatherEastTemp, altWeatherEastDescription, altWeatherSouthTemp, altWeatherSouthDescription, altWeatherWestTemp, altWeatherWestDescription := newLatLon(returnedLatitude, returnedLongitude)
-
-			//fmt.Println(altWeatherNorthTemp, altWeatherNorthDescription, altWeatherEastTemp, altWeatherEastDescription, altWeatherSouthTemp, altWeatherSouthDescription, altWeatherWestTemp, altWeatherWestDescription)
 		}
 	}
 }

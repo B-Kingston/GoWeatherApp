@@ -11,6 +11,7 @@
 - [ ] Phase 2 (Extended functionality using pre-existing api connections) #t
 	- [ ] Average temperature for a certain radius around original search location?
 		- [ ] Working on adjustable radius alter Lat Lon's to get surrounding weather info, located in the comments 🛫 2024-01-07 
+		- [ ] Directions seem to be mixed up, need to re arrange correctly (probably messed up the lat lon's)
 		
 	- [ ] More detailed and structured print out of data
 	- [ ] Any other silly novelty I can think up
