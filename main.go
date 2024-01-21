@@ -5,11 +5,13 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 	"os"
 	"strconv"
 	"strings"
 	"time"
+	// "GoWeatherApp/apiKeys"
 )
 
 type weatherResponse struct {
@@ -88,10 +90,10 @@ type geoCoder struct {
 
 func getUserLocation(rawAddress string) (float64, float64, string) {
 
-	geoCoderApiKey := os.Getenv("MapBoxAPI")
+	// geoCoderApiKey := os.Getenv("MapBoxAPI")
 	formattedLatLon := strings.ReplaceAll(rawAddress, " ", "%20")
 
-	url := fmt.Sprintf("https://api.mapbox.com/geocoding/v5/mapbox.places/%s.json?access_token=%s&limit=1", formattedLatLon, geoCoderApiKey)
+	url := fmt.Sprintf("https://api.mapbox.com/geocoding/v5/mapbox.places/%s.json?access_token=%s&limit=1", formattedLatLon, mapBoxApiKey)
 	method := "GET"
 	client := &http.Client{}
 	req, err := http.NewRequest(method, url, nil)
@@ -123,9 +125,8 @@ func getUserLocation(rawAddress string) (float64, float64, string) {
 }
 
 func getWeather(latitudeInput, longitudeInput float64) (float64, string, string) {
-	openWeatherMapApiKey := os.Getenv("OpenWeatherAPI")
 
-	url := fmt.Sprintf("http://api.openweathermap.org/data/2.5//weather?lat=%v&lon=%v&units=metric&lang=en&appid=%s", latitudeInput, longitudeInput, openWeatherMapApiKey)
+	url := fmt.Sprintf("http://api.openweathermap.org/data/2.5//weather?lat=%v&lon=%v&units=metric&lang=en&appid=%s", latitudeInput, longitudeInput, openWeatherApiKey)
 	method := "GET"
 
 	client := &http.Client{}
@@ -166,17 +167,28 @@ func newLatLon(originalLon, originalLat float64) (string, string, string, string
 	altLatSouth1, err3 := strconv.ParseFloat(altLatSouth, 64)
 	altLonWest1, err4 := strconv.ParseFloat(altLonWest, 64)
 
-	fmt.Sprint(err1, err2, err3, err4) //clears error for unused err's
+	if err1 != nil {
+		log.Fatal(err1)
+	}
+	if err2 != nil {
+		log.Fatal(err2)
+	}
+	if err3 != nil {
+		log.Fatal(err3)
+	}
+	if err4 != nil {
+		log.Fatal(err4)
+	}
 
 	altWeatherNorthTemp, altWeatherNorthDescription, altNorthLocationName := getWeather(altLatNorth1, originalLon)
 	combinedNorth := fmt.Sprintf("The current weather in %s is %s with a tempreature of %v", altNorthLocationName, altWeatherNorthDescription, altWeatherNorthTemp)
 
-	time.Sleep(2 * time.Second)
+	// time.Sleep(2 * time.Second)
 
 	altWeatherEastTemp, altWeatherEastDescription, altEastLocationName := getWeather(originalLat, altLonEast1)
 	combinedEast := fmt.Sprintf("The current weather in %s is %s with a tempreature of %v", altEastLocationName, altWeatherEastDescription, altWeatherEastTemp)
 
-	time.Sleep(2 * time.Second)
+	// time.Sleep(2 * time.Second)
 
 	altWeatherSouthTemp, altWeatherSouthDescription, altSouthLocationName := getWeather(altLatSouth1, originalLon)
 	combinedSouth := fmt.Sprintf("The current weather in %s is %s with a tempreature of %v", altSouthLocationName, altWeatherSouthDescription, altWeatherSouthTemp)
@@ -188,10 +200,9 @@ func newLatLon(originalLon, originalLat float64) (string, string, string, string
 
 	return combinedNorth, combinedEast, combinedSouth, combinedWest
 }
-
 func main() {
+	
 	scanner := bufio.NewScanner(os.Stdin)
-
 	for {
 		fmt.Println("\nPlease enter your desired location, or type Q to exit")
 		scanner.Scan()
