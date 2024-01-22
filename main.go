@@ -1,6 +1,8 @@
 package main
 
 import (
+	"gorm.io/gorm"
+ 	"gorm.io/driver/sqlite"
 	"bufio"
 	"encoding/json"
 	"fmt"
@@ -11,8 +13,16 @@ import (
 	"strconv"
 	"strings"
 	"time"
-	// "GoWeatherApp/apiKeys"
+	
 )
+
+type WeatherDB struct {
+  ID        uint           `gorm:"primaryKey"`
+  Location string
+  Description string
+  Temp uint
+}
+
 
 type weatherResponse struct {
 	Coord struct {
@@ -200,9 +210,40 @@ func newLatLon(originalLon, originalLat float64) (string, string, string, string
 
 	return combinedNorth, combinedEast, combinedSouth, combinedWest
 }
+
+func connectToSQLite() (*gorm.DB, error) {
+    db, err := gorm.Open(sqlite.Open("RetrievedWeather.db"), &gorm.Config{})
+    if err != nil {
+        return nil, err
+    }
+
+    return db, nil
+}
+
+func createEntry(db *gorm.DB, weatherDB *WeatherDB ) error {
+    result := db.Create(weatherDB)
+    if result.Error != nil {
+        return result.Error
+    }
+    return nil
+}
+
+
+
 func main() {
-	
-	scanner := bufio.NewScanner(os.Stdin)
+	db, err := connectToSQLite()
+    if err != nil {
+        log.Fatal(err)
+    }
+
+    err = db.AutoMigrate(&WeatherDB{})
+    if err != nil {
+        log.Fatal(err)
+    }
+
+
+
+scanner := bufio.NewScanner(os.Stdin)
 	for {
 		fmt.Println("\nPlease enter your desired location, or type Q to exit")
 		scanner.Scan()
@@ -210,6 +251,7 @@ func main() {
 			fmt.Print("\nGoodbye")
 			break
 		} else {
+
 			rawAddressInput := scanner.Text()
 
 			returnedLongitude, returnedLatitude, returnedLocality := getUserLocation(rawAddressInput)
@@ -218,14 +260,23 @@ func main() {
 
 			fmt.Sprint(AltLocationName)
 
-			altWeatherNorth, altWeatherEast, altWeatherSouth, altWeatherWest := newLatLon(returnedLongitude, returnedLatitude)
-			fmt.Println("The weather north of your location is", altWeatherNorth)
-			fmt.Println("The weather east of your location is", altWeatherEast)
-			fmt.Println("The weather south of your location is", altWeatherSouth)
-			fmt.Println("The weather west of your location is", altWeatherWest)
-
 			fmt.Printf("\nThe Current tempreature in %v is %v and the weather is currently %v \n\n", returnedLocality, currentTemp, currentWeatherDescription)
+			
+			// altWeatherNorth, altWeatherEast, altWeatherSouth, altWeatherWest := newLatLon(returnedLongitude, returnedLatitude)
+			// fmt.Println("The weather north of your location is", altWeatherNorth,"\n")
+			// fmt.Println("The weather east of your location is", altWeatherEast, "\n")
+			// fmt.Println("The weather south of your location is", altWeatherSouth,"\n")
+			// fmt.Println("The weather west of your location is", altWeatherWest)
 
+
+
+			newEntry := &WeatherDB{Location: scanner.Text(), Description: currentWeatherDescription, Temp: uint(currentTemp)}
+			err = createEntry(db, newEntry)
+			if err != nil {
+				log.Fatal(err)
+			}
+		
+			fmt.Println("Weather Saved in DB")
+		}
 		}
 	}
-}
