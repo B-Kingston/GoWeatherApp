@@ -1,10 +1,10 @@
 package main
 
-import(
-  "fmt"
-  "net/http"
-  "io"
-  "encoding/json"
+import (
+	"encoding/json"
+	"fmt"
+	"io"
+	"net/http"
 )
 
 type weatherResponse struct {
@@ -50,12 +50,10 @@ type weatherResponse struct {
 	Cod      int    `json:"cod"`
 }
 
+func getWeather(latitudeInput, longitudeInput float64) (float64, string) {
 
-
-func getWeather(latitudeInput, longitudeInput float64) (float64, string, string) {
-
-  //Calls MapBox to get locality of address, OpenWeatherMap is innacurate
-  locality := getLocality(longitudeInput, latitudeInput)
+	//Calls MapBox to get locality of address, OpenWeatherMap is innacurate
+	//locality := getLocality(longitudeInput, latitudeInput)
 
 	url := fmt.Sprintf("http://api.openweathermap.org/data/2.5//weather?lat=%v&lon=%v&units=metric&lang=en&appid=%s", latitudeInput, longitudeInput, openWeatherApiKey)
 	method := "GET"
@@ -65,23 +63,23 @@ func getWeather(latitudeInput, longitudeInput float64) (float64, string, string)
 
 	if err != nil {
 		fmt.Println(err)
-		return 0, "", ""
+		return 0, ""
 	}
 	res, err := client.Do(req)
 	if err != nil {
 		fmt.Println(err)
-		return 0, "", ""
+		return 0, ""
 	}
 	defer res.Body.Close()
 
 	WeatherResponseBody, err := io.ReadAll(res.Body)
 	if err != nil {
 		fmt.Println(err)
-		return 0, "", ""
+		return 0, ""
 	}
 
 	var storedWeatherResponse = weatherResponse{}
 	json.Unmarshal(WeatherResponseBody, &storedWeatherResponse)
 
-  return storedWeatherResponse.Main.Temp, storedWeatherResponse.Weather[0].Description, locality
+	return storedWeatherResponse.Main.Temp, storedWeatherResponse.Weather[0].Description
 }

@@ -53,9 +53,7 @@ func main() {
 
 			returnedLongitude, returnedLatitude, returnedLocality := getUserLocation(rawAddressInput)
 
-			currentTemp, currentWeatherDescription, AltLocationName := getWeather(returnedLatitude, returnedLongitude)
-
-			fmt.Sprint(AltLocationName)
+			currentTemp, currentWeatherDescription := getWeather(returnedLatitude, returnedLongitude)
 
 			fmt.Printf("\nThe Current tempreature in %v is %v and the weather is currently %v \n\n", returnedLocality, currentTemp, currentWeatherDescription)
 

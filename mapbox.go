@@ -1,13 +1,12 @@
 package main
 
-import(
-  "fmt"
-  "io"
-  "encoding/json"
-  "strings"
-  "net/http"
+import (
+	"encoding/json"
+	"fmt"
+	"io"
+	"net/http"
+	"strings"
 )
-
 
 type geoCoder struct {
 	Type     string   `json:"type"`
@@ -72,10 +71,9 @@ type forwardGeoCoder struct {
 }
 
 func getUserLocation(rawAddress string) (float64, float64, string) {
-  
 
 	// geoCoderApiKey := os.Getenv("MapBoxAPI")
-	formattedAddress:= strings.ReplaceAll(rawAddress, " ", "%20")
+	formattedAddress := strings.ReplaceAll(rawAddress, " ", "%20")
 
 	url := fmt.Sprintf("https://api.mapbox.com/geocoding/v5/mapbox.places/%s.json?access_token=%s&limit=1", formattedAddress, mapBoxApiKey)
 	method := "GET"
@@ -107,36 +105,3 @@ func getUserLocation(rawAddress string) (float64, float64, string) {
 	locality := geocodeResponse.Features[0].Context[1].Text
 	return longitude, latitude, locality
 }
-
-
-func getLocality(longitude, latitude float64) (string) {
-
-	url := fmt.Sprintf("https://api.mapbox.com/geocoding/v5/mapbox.places/%v,%v.json?access_token=%s&limit=1",longitude,latitude, mapBoxApiKey)
-	method := "GET"
-	client := &http.Client{}
-	req, err := http.NewRequest(method, url, nil)
-
-	if err != nil {
-		fmt.Println(err)
-		return "err"
-	}
-	res, err := client.Do(req)
-	if err != nil {
-		fmt.Println(err)
-		return "err"
-	}
-	defer res.Body.Close()
-
-	geocodeResponseBody, err := io.ReadAll(res.Body)
-	if err != nil {
-		fmt.Println(err)
-		return "err"
-  }
-
-	var geocodeResponse = forwardGeoCoder{}
-	json.Unmarshal(geocodeResponseBody, &geocodeResponse)
-
-	locality := geocodeResponse.Features[0].Context[1].Text
-	return locality
-}
-
