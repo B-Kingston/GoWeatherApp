@@ -7,7 +7,6 @@ import (
 	"net/http"
 	"strings"
 )
-
 type geoCoder struct {
 	Type     string   `json:"type"`
 	Query    []string `json:"query"`
@@ -96,7 +95,8 @@ func getUserLocation(rawAddress string) (float64, float64, string) {
 		fmt.Println(err)
 		return 0, 0, "err"
 	}
-
+  test := 123
+  fmt.Sprint(test)
 	var geocodeResponse = geoCoder{}
 	json.Unmarshal(geocodeResponseBody, &geocodeResponse)
 
